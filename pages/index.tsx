@@ -1,10 +1,11 @@
+import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useContext, useEffect } from "react";
 import { Listitem, Navbar, Navbarbot } from "../components";
 import { Store } from "../stores/store";
 
-const Home: NextPage = () => {
+const Home: NextPage = observer(() => {
   const { queryStore } = useContext(Store);
 
   const getGames = async () => {
@@ -27,7 +28,6 @@ const Home: NextPage = () => {
       <div className="flex flex-col gap-3">
         {queryStore.games &&
           queryStore.games.map((game) => {
-            console.log(game.parent_platforms[0].platform);
             return (
               <Listitem
                 key={game.id}
@@ -46,6 +46,6 @@ const Home: NextPage = () => {
       <footer></footer>
     </div>
   );
-};
+});
 
 export default Home;
