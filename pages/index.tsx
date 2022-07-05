@@ -31,6 +31,7 @@ const Home: NextPage = observer(() => {
             return (
               <Listitem
                 key={game.id}
+                gameid={game.id}
                 background_image={game.background_image}
                 release_date={game.released}
                 stars={game.rating}
