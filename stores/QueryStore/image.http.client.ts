@@ -21,9 +21,19 @@ export default class HttpImageClient {
     return data;
   }
 
-  async getGamesThisWeek() {}
+  async getGamesLastWeek(stringDate: string) {
+    const data = await $api.get<IGameRequest>("/games", {
+      params: { dates: stringDate },
+    });
+    return data;
+  }
 
-  async getGamesNextWeek() {}
+  async getGamesNextWeek(stringDate: string) {
+    const data = await $api.get<IGameRequest>("/games", {
+      params: { dates: stringDate },
+    });
+    return data;
+  }
 
   async getGameById({ id }: { id: string }) {
     const data = await $api.get<IGameById>(`/games/${id}`);

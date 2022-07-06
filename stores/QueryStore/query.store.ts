@@ -20,31 +20,54 @@ export default class QueryStore {
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const yyyy = date.getFullYear();
 
-    return yyyy + "-" + dd + "-" + mm;
+    return yyyy + "-" + mm + "-" + dd;
   }
 
   async getGames() {
+    this.games = undefined;
     const data = await this.ImageService.getGames();
     this.games = data.data.results;
   }
 
   async getGamesLast30() {
+    this.games = undefined;
     let today = new Date();
     let days = subDays(today, 30);
-    console.log(days);
     const formattedString = `${this.dateToString(days)},${this.dateToString(
       today
     )}`;
     const data = await this.ImageService.getGamesLast30(formattedString);
-    console.log(data);
+    this.games = data.data.results;
+  }
+
+  async getGamesLastWeek() {
+    this.games = undefined;
+    let today = new Date();
+    let days = subDays(today, 7);
+    const formattedString = `${this.dateToString(days)},${this.dateToString(
+      today
+    )}`;
+    const data = await this.ImageService.getGamesLastWeek(formattedString);
+    this.games = data.data.results;
+  }
+  async getGamesNextWeek() {
+    this.games = undefined;
+    let today = new Date();
+    let days = addDays(today, 7);
+    const formattedString = `${this.dateToString(today)},${this.dateToString(
+      days
+    )}`;
+    const data = await this.ImageService.getGamesNextWeek(formattedString);
     this.games = data.data.results;
   }
 
   async getGameById({ id }: { id: string }) {
+    this.game = undefined;
     const data = await this.ImageService.getGameById({ id });
     this.game = data.data;
   }
   async getGameScreenshotsByiD({ id }: { id: string }) {
+    this.images = undefined;
     const data = await this.ImageService.getGameScreenshotsByiD({ id });
     this.images = data.data;
   }

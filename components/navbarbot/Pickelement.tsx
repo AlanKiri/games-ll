@@ -1,8 +1,9 @@
+import Link from "next/link";
 import React, { useState } from "react";
 
 interface IPickelement {
   title: string;
-  buttons: string[];
+  buttons: { text: string; href: string }[];
 }
 
 const Pickelement = ({ title, buttons }: IPickelement) => {
@@ -23,7 +24,9 @@ const Pickelement = ({ title, buttons }: IPickelement) => {
       </div>
       <div className={`${isActive ? "flex" : "hidden"} flex gap-3 mx-3`}>
         {buttons.map((item, index) => (
-          <button key={index}>{item}</button>
+          <Link href={item.href} key={index}>
+            <button>{item.text}</button>
+          </Link>
         ))}
       </div>
     </div>

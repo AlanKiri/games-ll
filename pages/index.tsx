@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import { Listitem, Navbar, Navbarbot } from "../components";
 import { Store } from "../stores/store";
@@ -8,13 +9,23 @@ import { Store } from "../stores/store";
 const Home: NextPage = observer(() => {
   const { queryStore } = useContext(Store);
 
+  const router = useRouter();
+  const { query } = router.query;
   const getGames = async () => {
-    await queryStore.getGames();
+    if (query == undefined) {
+      return await queryStore.getGames();
+    } else if (query == "30days") {
+      return await queryStore.getGamesLast30();
+    } else if (query == "lastWeek") {
+      return await queryStore.getGamesLastWeek();
+    } else if (query == "nextWeek") {
+      return await queryStore.getGamesNextWeek();
+    }
   };
 
   useEffect(() => {
     getGames();
-  }, []);
+  }, [query]);
 
   return (
     <div>

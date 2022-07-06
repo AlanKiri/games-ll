@@ -7,7 +7,11 @@ const Navbarbot = () => {
       <button>All Games</button>
       <Pickelement
         title="New Releases"
-        buttons={["Last 30 days", "This week", "Next week"]}
+        buttons={[
+          { text: "Last 30 days", href: "?query=30days" },
+          { text: "Last week", href: "?query=lastWeek" },
+          { text: "Next week", href: "?query=nextWeek" },
+        ]}
       />
       <button>Genres</button>
       <button>Companies</button>
