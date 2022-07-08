@@ -1,32 +1,30 @@
 import { observer } from "mobx-react-lite";
-import type { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { useContext, useEffect } from "react";
-import { Listitem, Navbar, Navbarbot } from "../components";
-import { Store } from "../stores/store";
+import React, { useContext, useEffect } from "react";
 import { Oval } from "react-loader-spinner";
+import { Listitem, Navbar, Navbarbot } from "../../components";
+import { Store } from "../../stores/store";
 
-const Home: NextPage = observer(() => {
+const GenreId = observer(() => {
+  const router = useRouter();
+  const { id } = router.query;
+
   const { queryStore } = useContext(Store);
 
-  const router = useRouter();
-  const { query } = router.query;
-  const getGames = async () => {
-    if (query == undefined) {
-      return await queryStore.getGames();
-    } else if (query == "30days") {
-      return await queryStore.getGamesLast30();
-    } else if (query == "lastWeek") {
-      return await queryStore.getGamesLastWeek();
-    } else if (query == "nextWeek") {
-      return await queryStore.getGamesNextWeek();
+  const getData = async () => {
+    if (typeof id === "string") {
+      await queryStore.getGenreById(id);
+      await queryStore.getGamesByGenre(id);
     }
   };
 
+  const { genre, games } = queryStore;
+
   useEffect(() => {
-    getGames();
-  }, [query]);
+    getData();
+  }, [id]);
 
   return (
     <div>
@@ -43,16 +41,22 @@ const Home: NextPage = observer(() => {
         </div>
       ) : (
         <main className="flex flex-col gap-3">
-          {queryStore.games &&
-            queryStore.games.map((game) => {
+          <div className="flex flex-row">
+            <div className="flex flex-col 2xl:flex-row px-4 gap-4">
+              <h4 className="text-6xl lg:text-9xl">{genre?.name}</h4>
+              <p className="text-xs lg:text-sm">{genre?.description}</p>
+            </div>
+          </div>
+          {games &&
+            games.map((game) => {
               return (
                 <Listitem
                   key={game.id}
-                  gameid={game.id}
                   background_image={game.background_image}
+                  gameid={game.id}
+                  parent_platforms={game.parent_platforms}
                   release_date={game.released}
                   stars={game.rating}
-                  parent_platforms={game.parent_platforms}
                   title={game.name}
                 />
               );
@@ -64,4 +68,4 @@ const Home: NextPage = observer(() => {
   );
 });
 
-export default Home;
+export default GenreId;

@@ -74,3 +74,33 @@ export interface IGameScreenshots {
     height: number;
   }[];
 }
+
+export interface IGenreRequest {
+  count: number;
+  results: {
+    id: number;
+    name: string;
+    slug: string;
+    games_count: number;
+    image_background: string;
+    games: { id: number; slug: string; name: string; added: number }[];
+  }[];
+}
+
+export interface IGenre {
+  id: number;
+  name: string;
+  slug: string;
+  games_count: number;
+  image_background: string;
+  games: { id: number; slug: string; name: string; added: number }[];
+}
+
+export interface IGenreById {
+  id: number;
+  name: string;
+  slug: string;
+  games_count: number;
+  image_background: string;
+  description: string;
+}

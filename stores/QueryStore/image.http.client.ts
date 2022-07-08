@@ -3,6 +3,8 @@ import {
   IGameById,
   IGameRequest,
   IGameScreenshots,
+  IGenreById,
+  IGenreRequest,
 } from "./../../interfaces/requests";
 import { AxiosResponse } from "axios";
 import $api from "./api";
@@ -11,6 +13,13 @@ import { addDays } from "date-fns";
 export default class HttpImageClient {
   async getGames() {
     const data = await $api.get<IGameRequest>("/games");
+    return data;
+  }
+
+  async getGamesByGenre(id: string) {
+    const data = await $api.get<IGameRequest>("/games", {
+      params: { genres: id },
+    });
     return data;
   }
 
@@ -35,13 +44,23 @@ export default class HttpImageClient {
     return data;
   }
 
-  async getGameById({ id }: { id: string }) {
+  async getGameById(id: string) {
     const data = await $api.get<IGameById>(`/games/${id}`);
     return data;
   }
 
-  async getGameScreenshotsByiD({ id }: { id: string }) {
+  async getGameScreenshotsByiD(id: string) {
     const data = await $api.get<IGameScreenshots>(`/games/${id}/screenshots`);
+    return data;
+  }
+
+  async getGenres() {
+    const data = await $api.get<IGenreRequest>(`/genres`);
+    return data;
+  }
+
+  async getGenreById(id: string) {
+    const data = await $api.get<IGenreById>(`/genres/${id}`);
     return data;
   }
 }
