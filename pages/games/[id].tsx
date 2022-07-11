@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import {
   Info,
+  Listitem,
   Navbar,
   Navbarbot,
   PlatformCard,
@@ -25,9 +26,10 @@ const GameId = observer(() => {
     if (typeof id === "string") {
       await queryStore.getGameById(id);
       await queryStore.getGameScreenshotsByiD(id);
+      await queryStore.getGamesSameSeries(id);
     }
   };
-  const { game, images } = queryStore;
+  const { game, games, images } = queryStore;
 
   useEffect(() => {
     getGame();
@@ -112,6 +114,23 @@ const GameId = observer(() => {
             </div>
             <div className="flex py-10">
               <Info title="Last Update" description={game?.updated} />
+            </div>
+            <h3 className="text-xl font-bold mb-3">Games from same series</h3>
+            <div className="flex flex-col gap-3">
+              {games &&
+                games.map((game) => {
+                  return (
+                    <Listitem
+                      key={game.id}
+                      background_image={game.background_image}
+                      gameid={game.id}
+                      parent_platforms={game.parent_platforms}
+                      release_date={game.released}
+                      stars={game.rating}
+                      title={game.name}
+                    />
+                  );
+                })}
             </div>
           </div>
           <div className="col-span-11 md:col-span-12 lg:col-span-3">

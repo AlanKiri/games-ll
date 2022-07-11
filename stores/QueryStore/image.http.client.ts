@@ -1,18 +1,35 @@
 import {
-  IGame,
   IGameById,
   IGameRequest,
   IGameScreenshots,
   IGenreById,
   IGenreRequest,
+  IPublishersRequest,
 } from "./../../interfaces/requests";
-import { AxiosResponse } from "axios";
 import $api from "./api";
-import { addDays } from "date-fns";
 
 export default class HttpImageClient {
   async getGames() {
     const data = await $api.get<IGameRequest>("/games");
+    return data;
+  }
+
+  async expandGames(link: string) {
+    const data = await $api.get<IGameRequest>(link);
+    return data;
+  }
+
+  async getGamesByQuery(query: string) {
+    const data = await $api.get<IGameRequest>(`/games`, {
+      params: { search: query },
+    });
+    return data;
+  }
+
+  async getGamesSameSeries(id: string) {
+    const data = await $api.get<IGameRequest>(
+      `https://api.rawg.io/api/games/${id}/game-series`
+    );
     return data;
   }
 
@@ -61,6 +78,16 @@ export default class HttpImageClient {
 
   async getGenreById(id: string) {
     const data = await $api.get<IGenreById>(`/genres/${id}`);
+    return data;
+  }
+
+  async getPublishers() {
+    const data = await $api.get<IPublishersRequest>(`/publishers`);
+    return data;
+  }
+
+  async expandPublishers(link: string) {
+    const data = await $api.get<IPublishersRequest>(link);
     return data;
   }
 }

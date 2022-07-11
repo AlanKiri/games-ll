@@ -4,20 +4,24 @@ import {
   IGameScreenshots,
   IGenre,
   IGenreById,
+  IPublishers,
 } from "./../../interfaces/requests";
 import { action, makeAutoObservable } from "mobx";
 import HttpImageClient from "./image.http.client";
 import { addDays, subDays } from "date-fns";
 
 export default class QueryStore {
-  games: IGame[] | undefined = undefined;
-  game: IGameById | undefined = undefined;
-  images: IGameScreenshots | undefined = undefined;
+  games?: IGame[] = undefined;
+  game?: IGameById = undefined;
+  images?: IGameScreenshots = undefined;
   isLoading: boolean = false;
-  genres: IGenre[] | undefined = undefined;
-  genre: IGenreById | undefined = undefined;
+  genres?: IGenre[] = undefined;
+  genre?: IGenreById = undefined;
+  next?: string = undefined;
+  count?: number = undefined;
+  publishers?: IPublishers[] = undefined;
   constructor(private ImageService: HttpImageClient) {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
   }
 
   dateToString(date: Date) {
@@ -31,7 +35,44 @@ export default class QueryStore {
   async getGames() {
     this.isLoading = true;
     this.games = undefined;
-    const data = await this.ImageService.getGames().then(
+    await this.ImageService.getGames().then(
+      action("fetchSuccess", (games) => {
+        this.games = games.data.results;
+        this.next = games.data.next;
+        this.count = games.data.count;
+        this.isLoading = false;
+      })
+    );
+  }
+
+  async expandGames() {
+    if (!this.next) return;
+    await this.ImageService.expandGames(this.next).then(
+      action("fetchSuccess", (games) => {
+        this.games?.push(...games.data.results);
+        this.next = games.data.next;
+      })
+    );
+  }
+
+  async getGamesByQuery(query: string) {
+    this.isLoading = true;
+    this.games = undefined;
+    await this.ImageService.getGamesByQuery(query).then(
+      action("fetchSuccess", (games) => {
+        this.games = games.data.results;
+        this.next = games.data.next;
+        this.count = games.data.count;
+        this.isLoading = false;
+        console.log(this.games);
+      })
+    );
+  }
+
+  async getGamesSameSeries(id: string) {
+    this.isLoading = true;
+    this.games = undefined;
+    await this.ImageService.getGamesSameSeries(id).then(
       action("fetchSuccess", (games) => {
         this.games = games.data.results;
         this.isLoading = false;
@@ -42,9 +83,11 @@ export default class QueryStore {
   async getGamesByGenre(id: string) {
     this.isLoading = true;
     this.games = undefined;
-    const data = await this.ImageService.getGamesByGenre(id).then(
+    await this.ImageService.getGamesByGenre(id).then(
       action("fetchSuccess", (games) => {
         this.games = games.data.results;
+        this.next = games.data.next;
+        this.count = games.data.count;
         this.isLoading = false;
       })
     );
@@ -58,9 +101,11 @@ export default class QueryStore {
     const formattedString = `${this.dateToString(days)},${this.dateToString(
       today
     )}`;
-    const data = await this.ImageService.getGamesLast30(formattedString).then(
+    await this.ImageService.getGamesLast30(formattedString).then(
       action("fetchSuccess", (games) => {
         this.games = games.data.results;
+        this.next = games.data.next;
+        this.count = games.data.count;
         this.isLoading = false;
       })
     );
@@ -74,9 +119,11 @@ export default class QueryStore {
     const formattedString = `${this.dateToString(days)},${this.dateToString(
       today
     )}`;
-    const data = await this.ImageService.getGamesLastWeek(formattedString).then(
+    await this.ImageService.getGamesLastWeek(formattedString).then(
       action("fetchSuccess", (games) => {
         this.games = games.data.results;
+        this.next = games.data.next;
+        this.count = games.data.count;
         this.isLoading = false;
       })
     );
@@ -89,10 +136,12 @@ export default class QueryStore {
     const formattedString = `${this.dateToString(today)},${this.dateToString(
       days
     )}`;
-    const data = await this.ImageService.getGamesNextWeek(formattedString).then(
+    await this.ImageService.getGamesNextWeek(formattedString).then(
       action("fetchSuccess", (games) => {
         this.games = games.data.results;
         this.isLoading = false;
+        this.next = games.data.next;
+        this.count = games.data.count;
       })
     );
   }
@@ -100,7 +149,7 @@ export default class QueryStore {
   async getGameById(id: string) {
     this.isLoading = true;
     this.game = undefined;
-    const data = await this.ImageService.getGameById(id).then(
+    await this.ImageService.getGameById(id).then(
       action("fetchSuccess", (game) => {
         this.game = game.data;
         this.isLoading = false;
@@ -110,7 +159,7 @@ export default class QueryStore {
   async getGameScreenshotsByiD(id: string) {
     this.isLoading = true;
     this.images = undefined;
-    const data = await this.ImageService.getGameScreenshotsByiD(id).then(
+    await this.ImageService.getGameScreenshotsByiD(id).then(
       action("fetchSuccess", (images) => {
         this.images = images.data;
         this.isLoading = false;
@@ -121,10 +170,12 @@ export default class QueryStore {
   async getGenres() {
     this.isLoading = true;
     this.genres = undefined;
-    const data = await this.ImageService.getGenres().then(
+    await this.ImageService.getGenres().then(
       action("fetchSuccess", (genres) => {
         this.genres = genres.data.results;
         this.isLoading = false;
+        this.next = genres.data.next;
+        this.count = genres.data.count;
       })
     );
   }
@@ -132,10 +183,33 @@ export default class QueryStore {
   async getGenreById(id: string) {
     this.isLoading = true;
     this.genre = undefined;
-    const data = await this.ImageService.getGenreById(id).then(
+    await this.ImageService.getGenreById(id).then(
       action("fetchSuccess", (genre) => {
         this.genre = genre.data;
         this.isLoading = false;
+      })
+    );
+  }
+
+  async getPublishers() {
+    this.isLoading = true;
+    this.genres = undefined;
+    await this.ImageService.getPublishers().then(
+      action("fetchSuccess", (publishers) => {
+        this.publishers = publishers.data.results;
+        this.isLoading = false;
+        this.next = publishers.data.next;
+        this.count = publishers.data.count;
+      })
+    );
+  }
+
+  async expandPublishers() {
+    if (!this.next) return;
+    await this.ImageService.expandPublishers(this.next).then(
+      action("fetchSuccess", (publishers) => {
+        this.publishers?.push(...publishers.data.results);
+        this.next = publishers.data.next;
       })
     );
   }

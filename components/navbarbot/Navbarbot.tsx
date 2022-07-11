@@ -19,7 +19,9 @@ const Navbarbot = () => {
       <Link href="/genres">
         <button>Genres</button>
       </Link>
-      <button>Companies</button>
+      <Link href="/publishers">
+        <button>Publishers</button>
+      </Link>
     </div>
   );
 };

@@ -6,23 +6,30 @@ import { useContext, useEffect } from "react";
 import { Listitem, Navbar, Navbarbot } from "../components";
 import { Store } from "../stores/store";
 import { Oval } from "react-loader-spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Home: NextPage = observer(() => {
   const { queryStore } = useContext(Store);
 
   const router = useRouter();
   const { query } = router.query;
-  const getGames = async () => {
+  const getGames = () => {
     if (query == undefined) {
-      return await queryStore.getGames();
+      return queryStore.getGames();
     } else if (query == "30days") {
-      return await queryStore.getGamesLast30();
+      return queryStore.getGamesLast30();
     } else if (query == "lastWeek") {
-      return await queryStore.getGamesLastWeek();
+      return queryStore.getGamesLastWeek();
     } else if (query == "nextWeek") {
-      return await queryStore.getGamesNextWeek();
+      return queryStore.getGamesNextWeek();
     }
   };
+
+  const expandGames = async () => {
+    await queryStore.expandGames();
+  };
+
+  const { games } = queryStore;
 
   useEffect(() => {
     getGames();
@@ -42,22 +49,32 @@ const Home: NextPage = observer(() => {
           <Oval color="white" />
         </div>
       ) : (
-        <main className="flex flex-col gap-3">
-          {queryStore.games &&
-            queryStore.games.map((game) => {
-              return (
-                <Listitem
-                  key={game.id}
-                  gameid={game.id}
-                  background_image={game.background_image}
-                  release_date={game.released}
-                  stars={game.rating}
-                  parent_platforms={game.parent_platforms}
-                  title={game.name}
-                />
-              );
-            })}
-        </main>
+        games &&
+        queryStore.count && (
+          <InfiniteScroll
+            dataLength={games.length}
+            next={expandGames}
+            hasMore={games.length < queryStore.count}
+            loader={<h4>Loading...</h4>}
+          >
+            <main className="flex flex-col gap-3">
+              {games &&
+                games.map((game) => {
+                  return (
+                    <Listitem
+                      key={game.id}
+                      gameid={game.id}
+                      background_image={game.background_image}
+                      release_date={game.released}
+                      stars={game.rating}
+                      parent_platforms={game.parent_platforms}
+                      title={game.name}
+                    />
+                  );
+                })}
+            </main>
+          </InfiniteScroll>
+        )
       )}
       <footer></footer>
     </div>

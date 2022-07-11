@@ -1,14 +1,12 @@
-import { observer } from "mobx-react-lite";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { Oval } from "react-loader-spinner";
 import { Listitem, Navbar, Navbarbot } from "../../components";
 import { Store } from "../../stores/store";
-import InfiniteScroll from "react-infinite-scroll-component";
 
-const GenreId = observer(() => {
+const PublisherId = () => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -80,6 +78,6 @@ const GenreId = observer(() => {
       <footer></footer>
     </div>
   );
-});
+};
 
-export default GenreId;
+export default PublisherId;

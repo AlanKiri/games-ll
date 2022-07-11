@@ -1,6 +1,7 @@
 export interface IGameRequest {
   next: string;
   results: IGame[];
+  count: number;
 }
 
 export interface IGame {
@@ -77,6 +78,8 @@ export interface IGameScreenshots {
 
 export interface IGenreRequest {
   count: number;
+  next: string;
+
   results: {
     id: number;
     name: string;
@@ -103,4 +106,19 @@ export interface IGenreById {
   games_count: number;
   image_background: string;
   description: string;
+}
+
+export interface IPublishersRequest {
+  count: number;
+  next: string;
+  results: IPublishers[];
+}
+
+export interface IPublishers {
+  name: string;
+  exact_name: string;
+  search_name: string;
+  slug: string;
+  image_background: string;
+  id: number;
 }

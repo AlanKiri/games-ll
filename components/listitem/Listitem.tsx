@@ -64,13 +64,15 @@ const Listitem = ({
     <Link href={`/games/${gameid}`}>
       <div className="flex flex-col md:flex-row bg-red-800 ">
         <div className="block md:w-52">
-          <Image
-            src={background_image}
-            layout="responsive"
-            width={200}
-            height={113}
-            alt="Game image"
-          />
+          {background_image != null && (
+            <Image
+              src={background_image}
+              layout="responsive"
+              width={200}
+              height={113}
+              alt="Game image"
+            />
+          )}
         </div>
         <div className="flex flex-col m-3 gap-3 md:w-full  ">
           <div className="flex justify-between align-middle">
@@ -91,7 +93,7 @@ const Listitem = ({
               {release_date}
             </span>
             <div className="flex gap-1">
-              {parent_platforms.map((platform) =>
+              {parent_platforms?.map((platform) =>
                 createLogos(platform.platform.slug)
               )}
             </div>

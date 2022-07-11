@@ -1,35 +1,35 @@
 import { observer } from "mobx-react-lite";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
-import { Oval } from "react-loader-spinner";
-import { Listitem, Navbar, Navbarbot } from "../../components";
-import { Store } from "../../stores/store";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Oval } from "react-loader-spinner";
+import { Listitem, Navbar, Navbarbot } from "../../../components";
+import { Store } from "../../../stores/store";
 
-const GenreId = observer(() => {
+const SearchQuery = observer(() => {
   const router = useRouter();
-  const { id } = router.query;
+  const { query } = router.query;
+  console.log(query);
 
   const { queryStore } = useContext(Store);
 
-  const getGames = async () => {
-    if (typeof id === "string") {
-      await queryStore.getGenreById(id);
-      await queryStore.getGamesByGenre(id);
+  const getGame = async () => {
+    if (typeof query === "string") {
+      await queryStore.getGamesByQuery(query);
+      console.log(games);
     }
   };
+
   const expandGames = async () => {
     await queryStore.expandGames();
   };
 
-  const { genre, games } = queryStore;
+  const { games } = queryStore;
 
   useEffect(() => {
-    getGames();
-  }, [id]);
-
+    getGame();
+  }, [query]);
   return (
     <div>
       <Head>
@@ -53,22 +53,16 @@ const GenreId = observer(() => {
             loader={<h4>Loading...</h4>}
           >
             <main className="flex flex-col gap-3">
-              <div className="flex flex-row">
-                <div className="flex flex-col 2xl:flex-row px-4 gap-4">
-                  <h4 className="text-6xl lg:text-9xl">{genre?.name}</h4>
-                  <p className="text-xs lg:text-sm">{genre?.description}</p>
-                </div>
-              </div>
               {games &&
                 games.map((game) => {
                   return (
                     <Listitem
                       key={game.id}
-                      background_image={game.background_image}
                       gameid={game.id}
-                      parent_platforms={game.parent_platforms}
+                      background_image={game.background_image}
                       release_date={game.released}
                       stars={game.rating}
+                      parent_platforms={game.parent_platforms}
                       title={game.name}
                     />
                   );
@@ -82,4 +76,4 @@ const GenreId = observer(() => {
   );
 });
 
-export default GenreId;
+export default SearchQuery;

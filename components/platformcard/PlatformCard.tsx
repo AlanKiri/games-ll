@@ -44,7 +44,7 @@ const PlatformCard = ({ platform }: { platform: IPlatformCard }) => {
   return (
     <div className="flex p-3 bg-red-900 rounded-2xl">
       {useLogo(platform.slug)}
-      <span>{platform.slug}</span>
+      <span className="my-auto text-xl">{platform.slug}</span>
     </div>
   );
 };
