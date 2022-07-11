@@ -4,6 +4,8 @@ import {
   IGameScreenshots,
   IGenreById,
   IGenreRequest,
+  IPublisherById,
+  IPublishers,
   IPublishersRequest,
 } from "./../../interfaces/requests";
 import $api from "./api";
@@ -36,6 +38,13 @@ export default class HttpImageClient {
   async getGamesByGenre(id: string) {
     const data = await $api.get<IGameRequest>("/games", {
       params: { genres: id },
+    });
+    return data;
+  }
+
+  async getGamesByPublisher(id: string) {
+    const data = await $api.get<IGameRequest>("/games", {
+      params: { publishers: id },
     });
     return data;
   }
@@ -76,6 +85,11 @@ export default class HttpImageClient {
     return data;
   }
 
+  async expandGenres(link: string) {
+    const data = await $api.get<IGenreRequest>(link);
+    return data;
+  }
+
   async getGenreById(id: string) {
     const data = await $api.get<IGenreById>(`/genres/${id}`);
     return data;
@@ -88,6 +102,11 @@ export default class HttpImageClient {
 
   async expandPublishers(link: string) {
     const data = await $api.get<IPublishersRequest>(link);
+    return data;
+  }
+
+  async getPublisherById(id: string) {
+    const data = await $api.get<IPublisherById>(`/publishers/${id}`);
     return data;
   }
 }

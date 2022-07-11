@@ -4,6 +4,7 @@ import {
   IGameScreenshots,
   IGenre,
   IGenreById,
+  IPublisherById,
   IPublishers,
 } from "./../../interfaces/requests";
 import { action, makeAutoObservable } from "mobx";
@@ -20,6 +21,7 @@ export default class QueryStore {
   next?: string = undefined;
   count?: number = undefined;
   publishers?: IPublishers[] = undefined;
+  publisher?: IPublisherById = undefined;
   constructor(private ImageService: HttpImageClient) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
@@ -84,6 +86,18 @@ export default class QueryStore {
     this.isLoading = true;
     this.games = undefined;
     await this.ImageService.getGamesByGenre(id).then(
+      action("fetchSuccess", (games) => {
+        this.games = games.data.results;
+        this.next = games.data.next;
+        this.count = games.data.count;
+        this.isLoading = false;
+      })
+    );
+  }
+  async getGamesByPublisher(id: string) {
+    this.isLoading = true;
+    this.games = undefined;
+    await this.ImageService.getGamesByPublisher(id).then(
       action("fetchSuccess", (games) => {
         this.games = games.data.results;
         this.next = games.data.next;
@@ -180,6 +194,16 @@ export default class QueryStore {
     );
   }
 
+  async expandGenres() {
+    if (!this.next) return;
+    await this.ImageService.expandGenres(this.next).then(
+      action("fetchSuccess", (genres) => {
+        this.genres?.push(...genres.data.results);
+        this.next = genres.data.next;
+      })
+    );
+  }
+
   async getGenreById(id: string) {
     this.isLoading = true;
     this.genre = undefined;
@@ -210,6 +234,17 @@ export default class QueryStore {
       action("fetchSuccess", (publishers) => {
         this.publishers?.push(...publishers.data.results);
         this.next = publishers.data.next;
+      })
+    );
+  }
+
+  async getPublisherById(id: string) {
+    this.isLoading = true;
+    this.publisher = undefined;
+    await this.ImageService.getPublisherById(id).then(
+      action("fetchSuccess", (publisher) => {
+        this.publisher = publisher.data;
+        this.isLoading = false;
       })
     );
   }

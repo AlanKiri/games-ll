@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
@@ -6,7 +7,7 @@ import { Oval } from "react-loader-spinner";
 import { Listitem, Navbar, Navbarbot } from "../../components";
 import { Store } from "../../stores/store";
 
-const PublisherId = () => {
+const PublisherId = observer(() => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -14,15 +15,15 @@ const PublisherId = () => {
 
   const getGames = async () => {
     if (typeof id === "string") {
-      await queryStore.getGenreById(id);
-      await queryStore.getGamesByGenre(id);
+      await queryStore.getPublisherById(id);
+      await queryStore.getGamesByPublisher(id);
     }
   };
   const expandGames = async () => {
     await queryStore.expandGames();
   };
 
-  const { genre, games } = queryStore;
+  const { publisher, games } = queryStore;
 
   useEffect(() => {
     getGames();
@@ -53,8 +54,8 @@ const PublisherId = () => {
             <main className="flex flex-col gap-3">
               <div className="flex flex-row">
                 <div className="flex flex-col 2xl:flex-row px-4 gap-4">
-                  <h4 className="text-6xl lg:text-9xl">{genre?.name}</h4>
-                  <p className="text-xs lg:text-sm">{genre?.description}</p>
+                  <h4 className="text-5xl lg:text-8xl">{publisher?.name}</h4>
+                  <p className="text-xs lg:text-sm">{publisher?.description}</p>
                 </div>
               </div>
               {games &&
@@ -78,6 +79,6 @@ const PublisherId = () => {
       <footer></footer>
     </div>
   );
-};
+});
 
 export default PublisherId;

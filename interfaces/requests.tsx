@@ -122,3 +122,12 @@ export interface IPublishers {
   image_background: string;
   id: number;
 }
+
+export interface IPublisherById {
+  id: number;
+  name: string;
+  slug: string;
+  games_count: number;
+  image_background: string;
+  description: string;
+}
