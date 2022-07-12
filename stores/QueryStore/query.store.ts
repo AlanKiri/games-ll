@@ -1,4 +1,6 @@
 import {
+  IDeveloperById,
+  IDevelopers,
   IGame,
   IGameById,
   IGameScreenshots,
@@ -22,6 +24,8 @@ export default class QueryStore {
   count?: number = undefined;
   publishers?: IPublishers[] = undefined;
   publisher?: IPublisherById = undefined;
+  developers?: IDevelopers[] = undefined;
+  developer?: IDeveloperById = undefined;
   constructor(private ImageService: HttpImageClient) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
@@ -99,6 +103,18 @@ export default class QueryStore {
     this.isLoading = true;
     this.games = undefined;
     await this.ImageService.getGamesByPublisher(id).then(
+      action("fetchSuccess", (games) => {
+        this.games = games.data.results;
+        this.next = games.data.next;
+        this.count = games.data.count;
+        this.isLoading = false;
+      })
+    );
+  }
+  async getGamesByDeveloper(id: string) {
+    this.isLoading = true;
+    this.games = undefined;
+    await this.ImageService.getGamesByDeveloper(id).then(
       action("fetchSuccess", (games) => {
         this.games = games.data.results;
         this.next = games.data.next;
@@ -218,7 +234,7 @@ export default class QueryStore {
 
   async getPublishers() {
     this.isLoading = true;
-    this.genres = undefined;
+    this.publisher = undefined;
     await this.ImageService.getPublishers().then(
       action("fetchSuccess", (publishers) => {
         this.publishers = publishers.data.results;
@@ -245,6 +261,39 @@ export default class QueryStore {
     await this.ImageService.getPublisherById(id).then(
       action("fetchSuccess", (publisher) => {
         this.publisher = publisher.data;
+        this.isLoading = false;
+      })
+    );
+  }
+  async getDevelopers() {
+    this.isLoading = true;
+    this.developers = undefined;
+    await this.ImageService.getDevelopers().then(
+      action("fetchSuccess", (developers) => {
+        this.developers = developers.data.results;
+        this.isLoading = false;
+        this.next = developers.data.next;
+        this.count = developers.data.count;
+      })
+    );
+  }
+
+  async expandDevelopers() {
+    if (!this.next) return;
+    await this.ImageService.expandDevelopers(this.next).then(
+      action("fetchSuccess", (developers) => {
+        this.developers?.push(...developers.data.results);
+        this.next = developers.data.next;
+      })
+    );
+  }
+
+  async getDeveloperById(id: string) {
+    this.isLoading = true;
+    this.developer = undefined;
+    await this.ImageService.getDeveloperById(id).then(
+      action("fetchSuccess", (developer) => {
+        this.developer = developer.data;
         this.isLoading = false;
       })
     );

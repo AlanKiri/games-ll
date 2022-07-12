@@ -16,19 +16,20 @@ const PublisherId = observer(() => {
 
   const getGames = async () => {
     if (typeof id === "string") {
-      await queryStore.getPublisherById(id);
-      await queryStore.getGamesByPublisher(id);
+      await queryStore.getDeveloperById(id);
+      await queryStore.getGamesByDeveloper(id);
+      console.log(queryStore.developer);
     }
   };
   const expandGames = async () => {
     await queryStore.expandGames();
   };
 
-  const { publisher, games } = queryStore;
+  const { developer, games } = queryStore;
 
   let description = "";
-  if (publisher?.description != undefined) {
-    description = sanitizeHtml(publisher?.description, { allowedTags: [] });
+  if (developer?.description != undefined) {
+    description = sanitizeHtml(developer?.description, { allowedTags: [] });
   }
 
   useEffect(() => {
@@ -59,8 +60,8 @@ const PublisherId = observer(() => {
           >
             <main className="flex flex-col gap-3">
               <div className="flex flex-row">
-                <div className="flex flex-col 2xl:flex-row gap-4">
-                  <h4 className="text-4xl lg:text-8xl">{publisher?.name}</h4>
+                <div className="flex flex-col 2xl:flex-row  gap-4">
+                  <h4 className="text-4xl lg:text-8xl">{developer?.name}</h4>
                   <p className="text-xs lg:text-sm">{description}</p>
                 </div>
               </div>

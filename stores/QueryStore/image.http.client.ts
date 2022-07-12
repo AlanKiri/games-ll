@@ -1,4 +1,6 @@
 import {
+  IDeveloperById,
+  IDevelopersRequest,
   IGameById,
   IGameRequest,
   IGameScreenshots,
@@ -45,6 +47,12 @@ export default class HttpImageClient {
   async getGamesByPublisher(id: string) {
     const data = await $api.get<IGameRequest>("/games", {
       params: { publishers: id },
+    });
+    return data;
+  }
+  async getGamesByDeveloper(id: string) {
+    const data = await $api.get<IGameRequest>("/games", {
+      params: { developers: id },
     });
     return data;
   }
@@ -107,6 +115,21 @@ export default class HttpImageClient {
 
   async getPublisherById(id: string) {
     const data = await $api.get<IPublisherById>(`/publishers/${id}`);
+    return data;
+  }
+
+  async getDevelopers() {
+    const data = await $api.get<IDevelopersRequest>(`/developers`);
+    return data;
+  }
+
+  async expandDevelopers(link: string) {
+    const data = await $api.get<IDevelopersRequest>(link);
+    return data;
+  }
+
+  async getDeveloperById(id: string) {
+    const data = await $api.get<IDeveloperById>(`/developers/${id}`);
     return data;
   }
 }

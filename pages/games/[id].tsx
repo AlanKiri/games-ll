@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import {
-  Info,
   Listitem,
   Navbar,
   Navbarbot,
@@ -12,6 +11,16 @@ import {
 import { Store } from "../../stores/store";
 import Image from "next/image";
 import { Oval } from "react-loader-spinner";
+import Link from "next/link";
+import {
+  FaAndroid,
+  FaApple,
+  FaLinux,
+  FaPlaystation,
+  FaWindows,
+  FaXbox,
+} from "react-icons/fa";
+import { SiAtari, SiMacos, SiNintendo, SiSega } from "react-icons/si";
 
 const GameId = observer(() => {
   const router = useRouter();
@@ -28,14 +37,35 @@ const GameId = observer(() => {
   };
   const { game, games, images } = queryStore;
 
+  const useLogo = (slug: string) => {
+    switch (slug) {
+      case "pc":
+        return <FaWindows className="w-6 h-6 mr-3" />;
+      case "xbox":
+        return <FaXbox className="w-6 h-6 mr-3" />;
+      case "playstation":
+        return <FaPlaystation className="w-6 h-6 mr-3" />;
+      case "ios":
+        return <FaApple className="w-6 h-6 mr-3" />;
+      case "android":
+        return <FaAndroid className="w-6 h-6 mr-3" />;
+      case "mac":
+        return <SiMacos className="w-6 h-6 mr-3" />;
+      case "linux":
+        return <FaLinux className="w-6 h-6 mr-3" />;
+      case "nintendo":
+        return <SiNintendo className="w-6 h-6 mr-3" />;
+      case "atari":
+        return <SiAtari className="w-6 h-6 mr-3" />;
+      case "sega":
+        return <SiSega className="w-6 h-6 mr-3" />;
+    }
+  };
+
   useEffect(() => {
     getGame();
   }, [id]);
 
-  // let genres = "";
-  // genres += game?.genres.map((genre) => {
-  //   return genre.name;
-  // })
   interface IHref {
     name: string;
     id: number;
@@ -50,17 +80,29 @@ const GameId = observer(() => {
       path: `/genres/${genre.id}`,
     });
   });
-  let developers = "";
-  developers += game?.developers.map((developer) => {
-    return developer.name;
+  let developers: IHref[] = new Array();
+  game?.developers.map((developer) => {
+    developers.push({
+      name: developer.name,
+      id: developer.id,
+      path: `/developers/${developer.id}`,
+    });
   });
-  let publishers = "";
-  publishers += game?.publishers.map((publisher) => {
-    return publisher.name;
+  let publishers: IHref[] = new Array();
+  game?.publishers.map((publisher) => {
+    publishers.push({
+      name: publisher.name,
+      id: publisher.id,
+      path: `/publishers/${publisher.id}`,
+    });
   });
-  let tags = "";
-  tags += game?.tags.map((tag) => {
-    return tag.name;
+  let tags: IHref[] = new Array();
+  game?.tags.map((tag) => {
+    tags.push({
+      name: tag.name,
+      id: tag.id,
+      path: `/tags/${tag.id}`,
+    });
   });
   return (
     <div>
@@ -71,13 +113,20 @@ const GameId = observer(() => {
           <Oval color="white" />
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-7">
-          <div className="col-span-11 md:col-span-12 lg:col-span-9 flex flex-col">
-            {/* Title & release date */}
-            <div className="flex justify-between">
-              <h1 className="font-semibold text-2xl lg:text-5xl">
-                {game?.name}
-              </h1>
+        <div className="grid grid-cols-12 gap-y-7 lg:gap-y-0 lg:gap-x-7">
+          <div className="col-span-12 lg:col-span-9 flex flex-col  ">
+            {/* Title & platforms & release date */}
+            <div className="flex justify-between whitespace-nowrap items-end overflow-x-scroll scrollbar-hide ">
+              <div className="flex items-end">
+                <h1 className="font-semibold text-2xl mt-auto mr-5 lg:text-5xl">
+                  {game?.name}
+                </h1>
+                <div className="flex m-1 ">
+                  {game?.parent_platforms.map((platform) => {
+                    return useLogo(platform.platform.slug);
+                  })}
+                </div>
+              </div>
               <div className="px-3 py-2 bg-white rounded-2xl flex items-center whitespace-nowrap  ">
                 <span className="text-black font-semibold text-xs ">
                   {game?.released}
@@ -85,7 +134,7 @@ const GameId = observer(() => {
               </div>
             </div>
             {/* Carousel */}
-            <div className="my-3 flex w-full overflow-x-scroll scrollbar-hide md:scrollbar-default">
+            <div className="my-3 flex w-full overflow-x-scroll scrollbar-hide ">
               {images?.results.map((screenshot) => {
                 return (
                   <div key={screenshot.id} className="mr-3">
@@ -101,49 +150,100 @@ const GameId = observer(() => {
               })}
             </div>
             {/* Rating */}
-            <div className="my-5 mb-10">
-              <h2 className="my-3 font-medium text-4xl">Ratings</h2>
+            <div className="mb-3">
+              {/* <h2 className="my-3 font-medium text-4xl">Ratings</h2> */}
               <Rating rating={game?.ratings} />
             </div>
             {/* Information */}
-            <div className="grid grid-cols-12">
-              <Info
-                title="Genres"
-                links={genres}
-                className="col-span-11 lg:col-span-6"
-                isLink={true}
-              />
-              <Info
-                title="Release date"
-                description={game?.released}
-                className="col-span-11 lg:col-span-6"
-              />
-              <Info
-                title="Developers"
-                description={developers}
-                className="col-span-11 lg:col-span-6"
-              />
-              <Info
-                title="Publisher"
-                description={publishers}
-                className="col-span-11 lg:col-span-6"
-              />
-              <Info
-                title="Tags"
-                description={tags}
-                small={true}
-                className="col-span-11 lg:col-span-6"
-              />
-              <Info
-                title="Website"
-                description={game?.website}
-                className="col-span-11 lg:col-span-6"
-              />
-              <Info
-                title="Last Update"
-                description={game?.updated}
-                className="col-span-11 lg:col-span-6"
-              />
+            <div className="grid grid-cols-12 my-5 gap-y-14">
+              {genres.length > 0 && (
+                <div className="col-span-11 lg:col-span-6">
+                  <h3 className="font-semibold text-2xl ">Genres</h3>
+                  {genres.map((genre, index) => {
+                    if (index + 1 != genres.length) {
+                      return (
+                        <>
+                          <Link href={genre.path} key={genre.id}>
+                            <span className="text-1xl underline">
+                              {genre.name}
+                            </span>
+                          </Link>
+
+                          <span className="mr-2">,</span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <Link href={genre.path} key={genre.id}>
+                          <span className="text-1xl underline">
+                            {genre.name}
+                          </span>
+                        </Link>
+                      );
+                    }
+                  })}
+                </div>
+              )}
+              {developers.length > 0 && (
+                <div className="col-span-11 lg:col-span-6">
+                  <h3 className="font-semibold text-2xl ">Developers</h3>
+                  {developers.map((developer, index) => {
+                    if (index + 1 != developers.length) {
+                      return (
+                        <>
+                          <Link href={developer.path} key={developer.id}>
+                            <span className="text-1xl underline">
+                              {developer.name}
+                            </span>
+                          </Link>
+                          <span className="mr-2">,</span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <Link href={developer.path} key={developer.id}>
+                          <span className="text-1xl underline">
+                            {developer.name}
+                          </span>
+                        </Link>
+                      );
+                    }
+                  })}
+                </div>
+              )}
+              {publishers.length > 0 && (
+                <div className="col-span-11 lg:col-span-6">
+                  <h3 className="font-semibold text-2xl ">Publishers</h3>
+                  {publishers.map((publisher, index) => {
+                    if (index + 1 != publishers.length) {
+                      return (
+                        <>
+                          <Link href={publisher.path} key={publisher.id}>
+                            <span className="text-1xl underline">
+                              {publisher.name}
+                            </span>
+                          </Link>
+                          <span className="mr-2">,</span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <Link href={publisher.path} key={publisher.id}>
+                          <span className="text-1xl underline">
+                            {publisher.name}
+                          </span>
+                        </Link>
+                      );
+                    }
+                  })}
+                </div>
+              )}
+              {game?.released != undefined && (
+                <div className="col-span-11 lg:col-span-6">
+                  <h3 className="font-semibold text-2xl ">Release Date</h3>
+                  <p className="text-1xl">{game?.released}</p>
+                </div>
+              )}
             </div>
 
             {/* Games from same series */}
@@ -171,7 +271,7 @@ const GameId = observer(() => {
               </>
             )}
           </div>
-          <div className="col-span-11 md:col-span-12 lg:col-span-3">
+          <div className="col-span-12 lg:col-span-3">
             {/* Image representing game */}
             <div className="mb-5">
               {game?.background_image && (
@@ -188,14 +288,14 @@ const GameId = observer(() => {
             <p className="text-lg my-5">{game?.description_raw}</p>
             {/* Platforms */}
             <div className="flex flex-col gap-3">
-              {game?.parent_platforms.map((platform) => {
+              {/* {game?.parent_platforms.map((platform) => {
                 return (
                   <PlatformCard
                     platform={platform.platform}
                     key={platform.platform.id}
                   />
                 );
-              })}
+              })} */}
             </div>
           </div>
         </div>

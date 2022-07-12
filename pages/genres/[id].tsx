@@ -57,27 +57,32 @@ const GenreId = observer(() => {
             hasMore={games.length < queryStore.count}
             loader={<h4>Loading...</h4>}
           >
-            <main className="flex flex-col gap-3">
-              <div className="flex flex-row">
-                <div className="flex flex-col 2xl:flex-row px-4 gap-4">
-                  <h4 className="text-6xl lg:text-9xl">{genre?.name}</h4>
-                  <p className="text-xs lg:text-sm">{description}</p>
+            <main className="flex flex-col lg:gap-3">
+              <div className="flex flex-row mb-7 ">
+                <div className="flex flex-col 2xl:flex-row gap-4">
+                  <h4 className="text-5xl lg:text-9xl">{genre?.name}</h4>
+                  <p className="text-xs lg:text-sm overflow-x-scroll scrollbar-hide">
+                    {description}
+                  </p>
                 </div>
               </div>
-              {games &&
-                games.map((game) => {
-                  return (
-                    <Listitem
-                      key={game.id}
-                      background_image={game.background_image}
-                      gameid={game.id}
-                      parent_platforms={game.parent_platforms}
-                      release_date={game.released}
-                      stars={game.rating}
-                      title={game.name}
-                    />
-                  );
-                })}
+              {games && (
+                <div className="flex flex-col gap-3">
+                  {games.map((game) => {
+                    return (
+                      <Listitem
+                        key={game.id}
+                        background_image={game.background_image}
+                        gameid={game.id}
+                        parent_platforms={game.parent_platforms}
+                        release_date={game.released}
+                        stars={game.rating}
+                        title={game.name}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </main>
           </InfiniteScroll>
         )

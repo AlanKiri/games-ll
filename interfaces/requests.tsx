@@ -132,3 +132,30 @@ export interface IPublisherById {
   image_background: string;
   description: string;
 }
+export interface IDevelopersRequest {
+  count: number;
+  next: string;
+  results: IDevelopers[];
+}
+
+export interface IDevelopers {
+  name: string;
+  slug: string;
+  image_background: string;
+  games_count: number;
+  id: number;
+  games: {
+    id: number;
+    slug: string;
+    name: string;
+  }[];
+}
+
+export interface IDeveloperById {
+  id: number;
+  name: string;
+  slug: string;
+  games_count: number;
+  image_background: string;
+  description: string;
+}

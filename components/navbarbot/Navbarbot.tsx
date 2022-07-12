@@ -22,6 +22,9 @@ const Navbarbot = () => {
       <Link href="/publishers">
         <button>Publishers</button>
       </Link>
+      <Link href="/developers">
+        <button>Developers</button>
+      </Link>
     </div>
   );
 };
