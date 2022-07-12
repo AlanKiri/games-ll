@@ -42,6 +42,7 @@ export interface IGameById extends IGame {
   website: string;
   updated: string;
   description: string;
+  description_raw: string;
   developers: {
     id: number;
     slug: string;

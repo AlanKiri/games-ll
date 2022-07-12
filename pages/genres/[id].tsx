@@ -1,12 +1,12 @@
 import { observer } from "mobx-react-lite";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
 import { Oval } from "react-loader-spinner";
 import { Listitem, Navbar, Navbarbot } from "../../components";
 import { Store } from "../../stores/store";
 import InfiniteScroll from "react-infinite-scroll-component";
+import sanitizeHtml from "sanitize-html";
 
 const GenreId = observer(() => {
   const router = useRouter();
@@ -25,6 +25,11 @@ const GenreId = observer(() => {
   };
 
   const { genre, games } = queryStore;
+
+  let description = "";
+  if (genre?.description != undefined) {
+    description = sanitizeHtml(genre?.description, { allowedTags: [] });
+  }
 
   useEffect(() => {
     getGames();
@@ -56,7 +61,7 @@ const GenreId = observer(() => {
               <div className="flex flex-row">
                 <div className="flex flex-col 2xl:flex-row px-4 gap-4">
                   <h4 className="text-6xl lg:text-9xl">{genre?.name}</h4>
-                  <p className="text-xs lg:text-sm">{genre?.description}</p>
+                  <p className="text-xs lg:text-sm">{description}</p>
                 </div>
               </div>
               {games &&

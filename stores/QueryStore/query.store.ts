@@ -66,7 +66,6 @@ export default class QueryStore {
         this.next = games.data.next;
         this.count = games.data.count;
         this.isLoading = false;
-        console.log(this.games);
       })
     );
   }
@@ -76,7 +75,9 @@ export default class QueryStore {
     this.games = undefined;
     await this.ImageService.getGamesSameSeries(id).then(
       action("fetchSuccess", (games) => {
-        this.games = games.data.results;
+        if (games.data.count > 0) {
+          this.games = games.data.results;
+        }
         this.isLoading = false;
       })
     );

@@ -10,10 +10,7 @@ import {
   Rating,
 } from "../../components";
 import { Store } from "../../stores/store";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
 import Image from "next/image";
-import QueryStore from "../../stores/QueryStore/query.store";
 import { Oval } from "react-loader-spinner";
 
 const GameId = observer(() => {
@@ -35,9 +32,23 @@ const GameId = observer(() => {
     getGame();
   }, [id]);
 
-  let genres = "";
-  genres += game?.genres.map((genre) => {
-    return genre.name;
+  // let genres = "";
+  // genres += game?.genres.map((genre) => {
+  //   return genre.name;
+  // })
+  interface IHref {
+    name: string;
+    id: number;
+    path: string;
+  }
+
+  let genres: IHref[] = new Array();
+  game?.genres.map((genre) => {
+    genres.push({
+      name: genre.name,
+      id: genre.id,
+      path: `/genres/${genre.id}`,
+    });
   });
   let developers = "";
   developers += game?.developers.map((developer) => {
@@ -51,9 +62,6 @@ const GameId = observer(() => {
   tags += game?.tags.map((tag) => {
     return tag.name;
   });
-
-  console.log(game?.genres);
-
   return (
     <div>
       <Navbar />
@@ -77,7 +85,7 @@ const GameId = observer(() => {
               </div>
             </div>
             {/* Carousel */}
-            <div className="my-5 flex w-full overflow-x-scroll scrollbar-hide md:scrollbar-default">
+            <div className="my-3 flex w-full overflow-x-scroll scrollbar-hide md:scrollbar-default">
               {images?.results.map((screenshot) => {
                 return (
                   <div key={screenshot.id} className="mr-3">
@@ -98,40 +106,70 @@ const GameId = observer(() => {
               <Rating rating={game?.ratings} />
             </div>
             {/* Information */}
-            <div className="flex flex-col lg:flex-row  lg:py-10">
-              <Info title="Genres" description={genres} />
-              <Info title="Release date" description={game?.released} />
+            <div className="grid grid-cols-12">
+              <Info
+                title="Genres"
+                links={genres}
+                className="col-span-11 lg:col-span-6"
+                isLink={true}
+              />
+              <Info
+                title="Release date"
+                description={game?.released}
+                className="col-span-11 lg:col-span-6"
+              />
+              <Info
+                title="Developers"
+                description={developers}
+                className="col-span-11 lg:col-span-6"
+              />
+              <Info
+                title="Publisher"
+                description={publishers}
+                className="col-span-11 lg:col-span-6"
+              />
+              <Info
+                title="Tags"
+                description={tags}
+                small={true}
+                className="col-span-11 lg:col-span-6"
+              />
+              <Info
+                title="Website"
+                description={game?.website}
+                className="col-span-11 lg:col-span-6"
+              />
+              <Info
+                title="Last Update"
+                description={game?.updated}
+                className="col-span-11 lg:col-span-6"
+              />
             </div>
-            <div className="flex flex-col lg:flex-row  lg:py-10">
-              <Info title="Developers" description={developers} />
-              <Info title="Publisher" description={publishers} />
-            </div>
-            <div className="flex py-10">
-              <Info title="Tags" description={tags} small={true} />
-            </div>
-            <div className="flex py-10">
-              <Info title="Website" description={game?.website} />
-            </div>
-            <div className="flex py-10">
-              <Info title="Last Update" description={game?.updated} />
-            </div>
-            <h3 className="text-xl font-bold mb-3">Games from same series</h3>
-            <div className="flex flex-col gap-3">
-              {games &&
-                games.map((game) => {
-                  return (
-                    <Listitem
-                      key={game.id}
-                      background_image={game.background_image}
-                      gameid={game.id}
-                      parent_platforms={game.parent_platforms}
-                      release_date={game.released}
-                      stars={game.rating}
-                      title={game.name}
-                    />
-                  );
-                })}
-            </div>
+
+            {/* Games from same series */}
+            {games && (
+              <>
+                <h3 className="text-xl font-bold mb-3">
+                  Games from same series
+                </h3>
+                <div className="flex flex-col gap-3">
+                  {games &&
+                    games.map((game) => {
+                      return (
+                        <Listitem
+                          key={game.id}
+                          background_image={game.background_image}
+                          gameid={game.id}
+                          parent_platforms={game.parent_platforms}
+                          release_date={game.released}
+                          stars={game.rating}
+                          title={game.name}
+                        />
+                      );
+                    })}
+                </div>
+              </>
+            )}
           </div>
           <div className="col-span-11 md:col-span-12 lg:col-span-3">
             {/* Image representing game */}
@@ -147,7 +185,7 @@ const GameId = observer(() => {
               )}
             </div>
             {/* Description */}
-            <p className="text-lg my-5">{game?.description}</p>
+            <p className="text-lg my-5">{game?.description_raw}</p>
             {/* Platforms */}
             <div className="flex flex-col gap-3">
               {game?.parent_platforms.map((platform) => {

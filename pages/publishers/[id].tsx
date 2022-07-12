@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Oval } from "react-loader-spinner";
 import { Listitem, Navbar, Navbarbot } from "../../components";
 import { Store } from "../../stores/store";
+import sanitizeHtml from "sanitize-html";
 
 const PublisherId = observer(() => {
   const router = useRouter();
@@ -24,6 +25,11 @@ const PublisherId = observer(() => {
   };
 
   const { publisher, games } = queryStore;
+
+  let description = "";
+  if (publisher?.description != undefined) {
+    description = sanitizeHtml(publisher?.description, { allowedTags: [] });
+  }
 
   useEffect(() => {
     getGames();
@@ -55,7 +61,7 @@ const PublisherId = observer(() => {
               <div className="flex flex-row">
                 <div className="flex flex-col 2xl:flex-row px-4 gap-4">
                   <h4 className="text-5xl lg:text-8xl">{publisher?.name}</h4>
-                  <p className="text-xs lg:text-sm">{publisher?.description}</p>
+                  <p className="text-xs lg:text-sm">{description}</p>
                 </div>
               </div>
               {games &&
