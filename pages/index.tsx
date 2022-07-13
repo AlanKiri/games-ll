@@ -3,10 +3,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
-import { Listitem, Navbar, Navbarbot } from "../components";
+import { Listitem, MListItem, Navbar, Navbarbot } from "../components";
 import { Store } from "../stores/store";
 import { Oval } from "react-loader-spinner";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { motion } from "framer-motion";
 
 const Home: NextPage = observer(() => {
   const { queryStore } = useContext(Store);
@@ -35,6 +36,18 @@ const Home: NextPage = observer(() => {
     getGames();
   }, [query]);
 
+  const appearAnimation = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: (custom: number) => ({
+      opacity: 1,
+      transition: {
+        delay: custom * 0.1,
+      },
+    }),
+  };
+
   return (
     <div>
       <Head>
@@ -59,9 +72,9 @@ const Home: NextPage = observer(() => {
           >
             <main className="flex flex-col gap-3">
               {games &&
-                games.map((game) => {
+                games.map((game, index) => {
                   return (
-                    <Listitem
+                    <MListItem
                       key={game.id}
                       gameid={game.id}
                       background_image={game.background_image}
@@ -69,6 +82,10 @@ const Home: NextPage = observer(() => {
                       stars={game.rating}
                       parent_platforms={game.parent_platforms}
                       title={game.name}
+                      variants={appearAnimation}
+                      custom={index + 1}
+                      initial="hidden"
+                      animate="visible"
                     />
                   );
                 })}

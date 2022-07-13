@@ -8,6 +8,7 @@ import {
   IGenreById,
   IPublisherById,
   IPublishers,
+  IStore,
 } from "./../../interfaces/requests";
 import { action, makeAutoObservable } from "mobx";
 import HttpImageClient from "./image.http.client";
@@ -26,6 +27,7 @@ export default class QueryStore {
   publisher?: IPublisherById = undefined;
   developers?: IDevelopers[] = undefined;
   developer?: IDeveloperById = undefined;
+  stores?: IStore[] = undefined;
   constructor(private ImageService: HttpImageClient) {
     makeAutoObservable(this, {}, { autoBind: true });
   }
@@ -119,6 +121,17 @@ export default class QueryStore {
         this.games = games.data.results;
         this.next = games.data.next;
         this.count = games.data.count;
+        this.isLoading = false;
+      })
+    );
+  }
+
+  async getGameStore(id: string) {
+    this.isLoading = true;
+    this.stores = undefined;
+    await this.ImageService.getGameStore(id).then(
+      action("fetchSuccess", (games) => {
+        this.stores = games.data.results;
         this.isLoading = false;
       })
     );

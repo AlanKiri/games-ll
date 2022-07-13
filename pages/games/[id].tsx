@@ -33,9 +33,10 @@ const GameId = observer(() => {
       await queryStore.getGameById(id);
       await queryStore.getGameScreenshotsByiD(id);
       await queryStore.getGamesSameSeries(id);
+      await queryStore.getGameStore(id);
     }
   };
-  const { game, games, images } = queryStore;
+  const { game, games, images, stores } = queryStore;
 
   const useLogo = (slug: string) => {
     switch (slug) {
@@ -286,16 +287,27 @@ const GameId = observer(() => {
             </div>
             {/* Description */}
             <p className="text-lg my-5">{game?.description_raw}</p>
-            {/* Platforms */}
+            {/* Stores */}
+            <h3 className="text-xl font-bold mb-3">Where to buy?</h3>
             <div className="flex flex-col gap-3">
-              {/* {game?.parent_platforms.map((platform) => {
-                return (
-                  <PlatformCard
-                    platform={platform.platform}
-                    key={platform.platform.id}
-                  />
-                );
-              })} */}
+              <>
+                {game?.stores.map((store) => {
+                  return stores?.map((store2) => {
+                    console.log(store, store2);
+                    if (store2.store_id == store.store.id) {
+                      return (
+                        <PlatformCard
+                          id={store2.store_id}
+                          name={store.store.name}
+                          slug={store.store.slug}
+                          url={store2.url}
+                          key={store.id}
+                        />
+                      );
+                    }
+                  });
+                })}
+              </>
             </div>
           </div>
         </div>

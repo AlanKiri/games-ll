@@ -51,7 +51,7 @@ const Publishers = observer(() => {
                       href={`/publishers/${publisher.id}`}
                       key={publisher.id}
                     >
-                      <div className="flex flex-col bg-red-800 col-span-11 md:col-span-6  lg:col-span-4 text-center">
+                      <div className="flex flex-col bg-red-800 col-span-12 md:col-span-6  lg:col-span-4 text-center">
                         <div className="block w-full">
                           <Image
                             src={publisher.image_background}

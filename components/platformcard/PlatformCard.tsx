@@ -1,51 +1,53 @@
+import Link from "next/link";
 import React from "react";
 import {
-  FaAndroid,
+  FaSteam,
   FaApple,
-  FaLinux,
   FaPlaystation,
-  FaWindows,
   FaXbox,
+  FaSynagogue,
+  FaGooglePlay,
 } from "react-icons/fa";
-import { SiAtari, SiMacos, SiNintendo, SiSega } from "react-icons/si";
+import { SiEpicgames, SiNintendoswitch } from "react-icons/si";
 
-interface IPlatformCard {
+interface IStoreCard {
   id: number;
   name: string;
   slug: string;
+  url: string;
 }
 
 const useLogo = (slug: string) => {
   switch (slug) {
-    case "pc":
-      return <FaWindows className="w-8 h-8 mr-3" />;
-    case "xbox":
-      return <FaXbox className="w-8 h-8 mr-3" />;
-    case "playstation":
+    case "steam":
+      return <FaSteam className="w-8 h-8 mr-3" />;
+    case "playstation-store":
       return <FaPlaystation className="w-8 h-8 mr-3" />;
-    case "ios":
+    case "xbox-store":
+      return <FaXbox className="w-8 h-8 mr-3" />;
+    case "apple-appstore":
       return <FaApple className="w-8 h-8 mr-3" />;
-    case "android":
-      return <FaAndroid className="w-8 h-8 mr-3" />;
-    case "mac":
-      return <SiMacos className="w-8 h-8 mr-3" />;
-    case "linux":
-      return <FaLinux className="w-8 h-8 mr-3" />;
+    case "gog":
+      return <FaSynagogue className="w-8 h-8 mr-3" />;
     case "nintendo":
-      return <SiNintendo className="w-8 h-8 mr-3" />;
-    case "atari":
-      return <SiAtari className="w-8 h-8 mr-3" />;
-    case "sega":
-      return <SiSega className="w-8 h-8 mr-3" />;
+      return <SiNintendoswitch className="w-8 h-8 mr-3" />;
+    case "xbox360":
+      return <FaXbox className="w-8 h-8 mr-3" />;
+    case "google-play":
+      return <FaGooglePlay className="w-8 h-8 mr-3" />;
+    case "epic-games":
+      return <SiEpicgames className="w-8 h-8 mr-3" />;
   }
 };
 
-const PlatformCard = ({ platform }: { platform: IPlatformCard }) => {
+const PlatformCard = ({ id, slug, name, url }: IStoreCard) => {
   return (
-    <div className="flex p-3 bg-red-900 rounded-2xl">
-      {useLogo(platform.slug)}
-      <span className="my-auto text-xl">{platform.slug}</span>
-    </div>
+    <Link href={`${url}`}>
+      <div className="flex p-3 bg-red-900 rounded-2xl">
+        {useLogo(slug)}
+        <span className="my-auto text-xl">{name}</span>
+      </div>
+    </Link>
   );
 };
 

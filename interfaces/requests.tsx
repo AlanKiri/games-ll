@@ -65,6 +65,18 @@ export interface IGameById extends IGame {
     games_count: number;
     image_background: string;
   }[];
+  stores: {
+    id: number;
+    url: string;
+    store: {
+      id: number;
+      name: string;
+      slug: string;
+      domain: string;
+      games_count: number;
+      image_background: string;
+    };
+  }[];
 }
 
 export interface IGameScreenshots {
@@ -158,4 +170,17 @@ export interface IDeveloperById {
   games_count: number;
   image_background: string;
   description: string;
+}
+
+export interface IStoreRequest {
+  count: number;
+  next: string;
+  results: IStore[];
+}
+
+export interface IStore {
+  id: number;
+  game_id: number;
+  store_id: number;
+  url: string;
 }

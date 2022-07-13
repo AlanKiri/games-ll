@@ -48,7 +48,7 @@ const Genres = observer(() => {
                 queryStore.genres.map((genre) => {
                   return (
                     <Link href={`/genres/${genre.id}`} key={genre.id}>
-                      <div className="flex flex-col bg-red-800 col-span-11 md:col-span-6  lg:col-span-4 text-center">
+                      <div className="flex flex-col bg-red-800 col-span-1 md:col-span-6  lg:col-span-4 text-center">
                         <div className="block w-full">
                           <Image
                             src={genre.image_background}

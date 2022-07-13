@@ -9,6 +9,7 @@ import {
   IPublisherById,
   IPublishers,
   IPublishersRequest,
+  IStoreRequest,
 } from "./../../interfaces/requests";
 import $api from "./api";
 
@@ -54,6 +55,11 @@ export default class HttpImageClient {
     const data = await $api.get<IGameRequest>("/games", {
       params: { developers: id },
     });
+    return data;
+  }
+
+  async getGameStore(id: string) {
+    const data = await $api.get<IStoreRequest>(`/games/${id}/stores`);
     return data;
   }
 
