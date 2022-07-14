@@ -9,6 +9,7 @@ import {
   FaGooglePlay,
 } from "react-icons/fa";
 import { SiEpicgames, SiNintendoswitch } from "react-icons/si";
+import { motion } from "framer-motion";
 
 interface IStoreCard {
   id: number;
@@ -41,12 +42,25 @@ const useLogo = (slug: string) => {
 };
 
 const PlatformCard = ({ id, slug, name, url }: IStoreCard) => {
+  const hoverAnimation = {
+    hovered: {
+      backgroundColor: "#DC2626",
+      transition: {
+        duration: 0.1,
+      },
+    },
+  };
+
   return (
     <Link href={`${url}`}>
-      <div className="flex p-3 bg-red-900 rounded-2xl">
+      <motion.div
+        className="flex p-3 bg-red-900 rounded-2xl hover:cursor-pointer"
+        variants={hoverAnimation}
+        whileHover="hovered"
+      >
         {useLogo(slug)}
         <span className="my-auto text-xl">{name}</span>
-      </div>
+      </motion.div>
     </Link>
   );
 };

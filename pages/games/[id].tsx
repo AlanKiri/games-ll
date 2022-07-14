@@ -1,17 +1,10 @@
+import { motion } from "framer-motion";
 import { observer } from "mobx-react-lite";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
-import {
-  Listitem,
-  Navbar,
-  Navbarbot,
-  PlatformCard,
-  Rating,
-} from "../../components";
-import { Store } from "../../stores/store";
-import Image from "next/image";
-import { Oval } from "react-loader-spinner";
-import Link from "next/link";
 import {
   FaAndroid,
   FaApple,
@@ -21,6 +14,8 @@ import {
   FaXbox,
 } from "react-icons/fa";
 import { SiAtari, SiMacos, SiNintendo, SiSega } from "react-icons/si";
+import { MListItem, PlatformCard, Rating } from "../../components";
+import { Store } from "../../stores/store";
 import Layout from "../layout";
 
 const GameId = observer(() => {
@@ -64,6 +59,13 @@ const GameId = observer(() => {
     }
   };
 
+  const animateButtonHover = {
+    hover: {
+      color: "#d3d3d3",
+      transition: { duration: 0.2 },
+    },
+  };
+
   useEffect(() => {
     getGame();
   }, [id]);
@@ -73,6 +75,15 @@ const GameId = observer(() => {
     id: number;
     path: string;
   }
+
+  const appearAnimation = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+    },
+  };
 
   let genres: IHref[] = new Array();
   game?.genres.map((genre) => {
@@ -109,11 +120,11 @@ const GameId = observer(() => {
   return (
     <div>
       <Layout>
-        {queryStore.isLoading ? (
-          <div className="w-full h-screen flex justify-center items-center">
-            <Oval color="white" />
-          </div>
-        ) : (
+        <Head>
+          <title>{game?.name}</title>
+          <meta name="description" content={`${game?.name} description page`} />
+        </Head>
+        {
           <div className="grid grid-cols-12 gap-y-7 lg:gap-y-0 lg:gap-x-7">
             <div className="col-span-12 lg:col-span-9 flex flex-col  ">
               {/* Title & platforms & release date */}
@@ -165,9 +176,13 @@ const GameId = observer(() => {
                         return (
                           <>
                             <Link href={genre.path} key={genre.id}>
-                              <span className="text-1xl underline">
+                              <motion.span
+                                variants={animateButtonHover}
+                                whileHover="hover"
+                                className="text-1xl underline hover:cursor-pointer"
+                              >
                                 {genre.name}
-                              </span>
+                              </motion.span>
                             </Link>
 
                             <span className="mr-2">,</span>
@@ -176,9 +191,13 @@ const GameId = observer(() => {
                       } else {
                         return (
                           <Link href={genre.path} key={genre.id}>
-                            <span className="text-1xl underline">
+                            <motion.span
+                              variants={animateButtonHover}
+                              whileHover="hover"
+                              className="text-1xl underline hover:cursor-pointer"
+                            >
                               {genre.name}
-                            </span>
+                            </motion.span>
                           </Link>
                         );
                       }
@@ -193,9 +212,13 @@ const GameId = observer(() => {
                         return (
                           <>
                             <Link href={developer.path} key={developer.id}>
-                              <span className="text-1xl underline">
+                              <motion.span
+                                variants={animateButtonHover}
+                                whileHover="hover"
+                                className="text-1xl underline cursor-pointer"
+                              >
                                 {developer.name}
-                              </span>
+                              </motion.span>
                             </Link>
                             <span className="mr-2">,</span>
                           </>
@@ -203,9 +226,13 @@ const GameId = observer(() => {
                       } else {
                         return (
                           <Link href={developer.path} key={developer.id}>
-                            <span className="text-1xl underline">
+                            <motion.span
+                              variants={animateButtonHover}
+                              whileHover="hover"
+                              className="text-1xl underline cursor-pointer"
+                            >
                               {developer.name}
-                            </span>
+                            </motion.span>
                           </Link>
                         );
                       }
@@ -220,9 +247,13 @@ const GameId = observer(() => {
                         return (
                           <>
                             <Link href={publisher.path} key={publisher.id}>
-                              <span className="text-1xl underline">
+                              <motion.span
+                                variants={animateButtonHover}
+                                whileHover="hover"
+                                className="text-1xl underline cursor-pointer"
+                              >
                                 {publisher.name}
-                              </span>
+                              </motion.span>
                             </Link>
                             <span className="mr-2">,</span>
                           </>
@@ -230,9 +261,13 @@ const GameId = observer(() => {
                       } else {
                         return (
                           <Link href={publisher.path} key={publisher.id}>
-                            <span className="text-1xl underline">
+                            <motion.span
+                              variants={animateButtonHover}
+                              whileHover="hover"
+                              className="text-1xl underline cursor-pointer"
+                            >
                               {publisher.name}
-                            </span>
+                            </motion.span>
                           </Link>
                         );
                       }
@@ -257,7 +292,7 @@ const GameId = observer(() => {
                     {games &&
                       games.map((game) => {
                         return (
-                          <Listitem
+                          <MListItem
                             key={game.id}
                             background_image={game.background_image}
                             gameid={game.id}
@@ -265,6 +300,9 @@ const GameId = observer(() => {
                             release_date={game.released}
                             stars={game.rating}
                             title={game.name}
+                            variants={appearAnimation}
+                            initial="hidden"
+                            whileInView="visible"
                           />
                         );
                       })}
@@ -311,7 +349,7 @@ const GameId = observer(() => {
               </div>
             </div>
           </div>
-        )}
+        }
       </Layout>
     </div>
   );

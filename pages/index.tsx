@@ -3,11 +3,9 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
-import { Listitem, MListItem, Navbar, Navbarbot } from "../components";
-import { Store } from "../stores/store";
-import { Oval } from "react-loader-spinner";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { motion } from "framer-motion";
+import { MListItem } from "../components";
+import { Store } from "../stores/store";
 import Layout from "./layout";
 
 const Home: NextPage = observer(() => {
@@ -43,6 +41,7 @@ const Home: NextPage = observer(() => {
     },
     visible: {
       opacity: 1,
+      transition: { delay: 0.2 },
     },
   };
 
@@ -54,42 +53,36 @@ const Home: NextPage = observer(() => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        {queryStore.isLoading ? (
-          <div className="w-full h-screen flex justify-center items-center">
-            <Oval color="white" />
-          </div>
-        ) : (
-          games &&
-          queryStore.count && (
-            <InfiniteScroll
-              dataLength={games.length}
-              next={expandGames}
-              hasMore={games.length < queryStore.count}
-              loader={<h4>Loading...</h4>}
-            >
-              <main className="flex flex-col gap-3">
-                {games &&
-                  games.map((game, index) => {
-                    console.log(index);
-                    return (
-                      <MListItem
-                        key={game.id}
-                        gameid={game.id}
-                        background_image={game.background_image}
-                        release_date={game.released}
-                        stars={game.rating}
-                        parent_platforms={game.parent_platforms}
-                        title={game.name}
-                        variants={appearAnimation}
-                        initial="hidden"
-                        whileInView="visible"
-                      />
-                    );
-                  })}
-              </main>
-            </InfiniteScroll>
-          )
+        {games && queryStore.count && (
+          <InfiniteScroll
+            dataLength={games.length}
+            next={expandGames}
+            hasMore={games.length < queryStore.count}
+            loader={<h4></h4>}
+          >
+            <main className="flex flex-col gap-3">
+              {games &&
+                games.map((game, index) => {
+                  console.log(index);
+                  return (
+                    <MListItem
+                      key={game.id}
+                      gameid={game.id}
+                      background_image={game.background_image}
+                      release_date={game.released}
+                      stars={game.rating}
+                      parent_platforms={game.parent_platforms}
+                      title={game.name}
+                      variants={appearAnimation}
+                      initial="hidden"
+                      whileInView="visible"
+                    />
+                  );
+                })}
+            </main>
+          </InfiniteScroll>
         )}
+        )
       </Layout>
     </div>
   );

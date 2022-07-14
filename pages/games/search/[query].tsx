@@ -1,10 +1,9 @@
 import { observer } from "mobx-react-lite";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Oval } from "react-loader-spinner";
-import { Listitem, Navbar, Navbarbot } from "../../../components";
+import { MListItem } from "../../../components";
 import { Store } from "../../../stores/store";
 import Layout from "../../layout";
 
@@ -26,6 +25,16 @@ const SearchQuery = observer(() => {
     await queryStore.expandGames();
   };
 
+  const appearAnimation = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+      transition: { delay: 0.2 },
+    },
+  };
+
   const { games } = queryStore;
 
   useEffect(() => {
@@ -39,37 +48,33 @@ const SearchQuery = observer(() => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        {queryStore.isLoading ? (
-          <div className="w-full h-screen flex justify-center items-center">
-            <Oval color="white" />
-          </div>
-        ) : (
-          games &&
-          queryStore.count && (
-            <InfiniteScroll
-              dataLength={games.length}
-              next={expandGames}
-              hasMore={games.length < queryStore.count}
-              loader={<h4>Loading...</h4>}
-            >
-              <main className="flex flex-col gap-3">
-                {games &&
-                  games.map((game) => {
-                    return (
-                      <Listitem
-                        key={game.id}
-                        gameid={game.id}
-                        background_image={game.background_image}
-                        release_date={game.released}
-                        stars={game.rating}
-                        parent_platforms={game.parent_platforms}
-                        title={game.name}
-                      />
-                    );
-                  })}
-              </main>
-            </InfiniteScroll>
-          )
+        {games && queryStore.count && (
+          <InfiniteScroll
+            dataLength={games.length}
+            next={expandGames}
+            hasMore={games.length < queryStore.count}
+            loader={<h4></h4>}
+          >
+            <main className="flex flex-col gap-3">
+              {games &&
+                games.map((game) => {
+                  return (
+                    <MListItem
+                      key={game.id}
+                      gameid={game.id}
+                      background_image={game.background_image}
+                      release_date={game.released}
+                      stars={game.rating}
+                      parent_platforms={game.parent_platforms}
+                      title={game.name}
+                      variants={appearAnimation}
+                      initial="hidden"
+                      whileInView="visible"
+                    />
+                  );
+                })}
+            </main>
+          </InfiniteScroll>
         )}
       </Layout>
     </div>

@@ -36,16 +36,15 @@ const Navbar = () => {
         </motion.div>
       </Link>
       <form className="flex bg-white rounded-full w-full">
-        <motion.button
-          type="submit"
-          onClick={handleSearch}
-          initial={{ color: "fff" }}
-          variants={hoverAnimation}
-          whileHover="hover"
-          className="text-black"
-        >
-          <AiOutlineSearch className="w-4 h-4 md:h-6 md:w-6 text-inherit  my-auto mx-2" />
-        </motion.button>
+        <button type="submit" onClick={handleSearch}>
+          <motion.div
+            variants={hoverAnimation}
+            whileHover="hover"
+            className="text-black"
+          >
+            <AiOutlineSearch className="w-4 h-4 md:h-6 md:w-6 my-auto mx-2" />
+          </motion.div>
+        </button>
         <input
           type="text"
           className="bg-transparent text-black outline-none w-full "
