@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 interface IPickelement {
   title: string;
@@ -8,6 +9,13 @@ interface IPickelement {
 
 const Pickelement = ({ title, buttons }: IPickelement) => {
   const [isActive, setIsActive] = useState(false);
+
+  const animateButtonHover = {
+    hover: {
+      color: "#d3d3d3",
+      transition: { duration: 0.2 },
+    },
+  };
 
   return (
     <div
@@ -20,12 +28,16 @@ const Pickelement = ({ title, buttons }: IPickelement) => {
       }}
     >
       <div className="bg-red-600 rounded-2xl px-2 py-3">
-        <button>{title}</button>
+        <motion.button variants={animateButtonHover} whileHover="hover">
+          {title}
+        </motion.button>
       </div>
       <div className={`${isActive ? "flex" : "hidden"} flex gap-3 mx-3`}>
         {buttons.map((item, index) => (
           <Link href={item.href} key={index}>
-            <button>{item.text}</button>
+            <motion.button variants={animateButtonHover} whileHover="hover">
+              {item.text}
+            </motion.button>
           </Link>
         ))}
       </div>

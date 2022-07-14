@@ -30,7 +30,7 @@ interface IListItem {
 
 const hoverAnimation = {
   hovered: {
-    backgroundColor: "#950101",
+    backgroundColor: "#DC2626",
     transition: {
       duration: 0.1,
     },

@@ -40,12 +40,9 @@ const Home: NextPage = observer(() => {
     hidden: {
       opacity: 0,
     },
-    visible: (custom: number) => ({
+    visible: {
       opacity: 1,
-      transition: {
-        delay: custom * 0.1,
-      },
-    }),
+    },
   };
 
   return (
@@ -73,6 +70,7 @@ const Home: NextPage = observer(() => {
             <main className="flex flex-col gap-3">
               {games &&
                 games.map((game, index) => {
+                  console.log(index);
                   return (
                     <MListItem
                       key={game.id}
@@ -83,9 +81,8 @@ const Home: NextPage = observer(() => {
                       parent_platforms={game.parent_platforms}
                       title={game.name}
                       variants={appearAnimation}
-                      custom={index + 1}
                       initial="hidden"
-                      animate="visible"
+                      whileInView="visible"
                     />
                   );
                 })}
