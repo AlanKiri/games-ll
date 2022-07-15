@@ -1895,6 +1895,11 @@ react-scroll-horizontal@^1.6.6:
   dependencies:
     react-motion "^0.5.2"
 
+react-use-draggable-scroll@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/react-use-draggable-scroll/-/react-use-draggable-scroll-0.4.4.tgz#1ed1bb6734f524ad5b9806a7138c005e0ea70f77"
+  integrity sha512-lAXPv1y7cPunsZDW12aHenRV0TBg19JACHKI8npJykkPckn2OeVz89AETT0XCLMQw1JfIel59TAXJiZ5DLSrVQ==
+
 react@18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"

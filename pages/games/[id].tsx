@@ -4,7 +4,13 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useEffect } from "react";
+import React, {
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   FaAndroid,
   FaApple,
@@ -14,9 +20,10 @@ import {
   FaXbox,
 } from "react-icons/fa";
 import { SiAtari, SiMacos, SiNintendo, SiSega } from "react-icons/si";
-import { MListItem, PlatformCard, Rating } from "../../components";
+import { ImageModal, MListItem, PlatformCard, Rating } from "../../components";
 import { Store } from "../../stores/store";
 import Layout from "../layout";
+import { useDraggable } from "react-use-draggable-scroll";
 
 const GameId = observer(() => {
   const router = useRouter();
@@ -66,8 +73,17 @@ const GameId = observer(() => {
     },
   };
 
+  const [image, setImage] = useState({
+    isModalOpen: false,
+    link: "",
+    width: 1920,
+    height: 1080,
+  });
+
   useEffect(() => {
-    getGame();
+    if (queryStore.isLoading != true) {
+      getGame();
+    }
   }, [id]);
 
   interface IHref {
@@ -117,6 +133,11 @@ const GameId = observer(() => {
       path: `/tags/${tag.id}`,
     });
   });
+
+  const ref =
+    useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
+  const { events } = useDraggable(ref);
+
   return (
     <div>
       <Layout>
@@ -125,8 +146,8 @@ const GameId = observer(() => {
           <meta name="description" content={`${game?.name} description page`} />
         </Head>
         {
-          <div className="grid grid-cols-12 gap-y-7 lg:gap-y-0 lg:gap-x-7">
-            <div className="col-span-12 lg:col-span-9 flex flex-col  ">
+          <div className={`grid grid-cols-12 gap-y-7 lg:gap-y-0 lg:gap-x-7  `}>
+            <div className="col-span-12 lg:col-span-9 flex flex-col overflow ">
               {/* Title & platforms & release date */}
               <div className="flex justify-between whitespace-nowrap items-end overflow-x-scroll scrollbar-hide ">
                 <div className="flex items-end">
@@ -146,7 +167,11 @@ const GameId = observer(() => {
                 </div>
               </div>
               {/* Carousel */}
-              <div className="my-3 flex w-full overflow-x-scroll scrollbar-hide ">
+              <div
+                className="my-3 flex w-full overflow-x-scroll scrollbar-hide "
+                {...events}
+                ref={ref}
+              >
                 {images?.results.map((screenshot) => {
                   return (
                     <div key={screenshot.id} className="mr-3">
@@ -156,6 +181,15 @@ const GameId = observer(() => {
                         height={168}
                         layout="fixed"
                         alt="Image of game"
+                        className="hover:cursor-pointer"
+                        onClick={() => {
+                          setImage({
+                            link: screenshot.image,
+                            height: screenshot.height,
+                            width: screenshot.width,
+                            isModalOpen: true,
+                          });
+                        }}
                       />
                     </div>
                   );
@@ -320,6 +354,13 @@ const GameId = observer(() => {
                     width={253}
                     layout="responsive"
                     alt={"Game representing image"}
+                    onClick={() => {
+                      setImage({
+                        ...image,
+                        link: game?.background_image,
+                        isModalOpen: true,
+                      });
+                    }}
                   />
                 )}
               </div>
@@ -331,7 +372,6 @@ const GameId = observer(() => {
                 <>
                   {game?.stores.map((store) => {
                     return stores?.map((store2) => {
-                      console.log(store, store2);
                       if (store2.store_id == store.store.id) {
                         return (
                           <PlatformCard
@@ -350,6 +390,7 @@ const GameId = observer(() => {
             </div>
           </div>
         }
+        {image.isModalOpen && <ImageModal image={image} setImage={setImage} />}
       </Layout>
     </div>
   );

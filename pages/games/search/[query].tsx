@@ -10,14 +10,12 @@ import Layout from "../../layout";
 const SearchQuery = observer(() => {
   const router = useRouter();
   const { query } = router.query;
-  console.log(query);
 
   const { queryStore } = useContext(Store);
 
   const getGame = async () => {
     if (typeof query === "string") {
       await queryStore.getGamesByQuery(query);
-      console.log(games);
     }
   };
 

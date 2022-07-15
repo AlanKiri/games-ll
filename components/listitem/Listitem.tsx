@@ -100,9 +100,9 @@ const ListItem = forwardRef(
                 {[...Array(5)].map((star, index) => {
                   index += 1;
                   return index <= stars ? (
-                    <BsStarFill className="my-auto" />
+                    <BsStarFill className="my-auto" key={index} />
                   ) : (
-                    <BsStar className="my-auto" />
+                    <BsStar className="my-auto" key={index} />
                   );
                 })}
               </div>
@@ -112,9 +112,13 @@ const ListItem = forwardRef(
                 {release_date}
               </span>
               <div className="flex gap-1">
-                {parent_platforms?.map((platform) =>
-                  createLogos(platform.platform.slug)
-                )}
+                {parent_platforms?.map((platform) => {
+                  return (
+                    <div key={platform.platform.id}>
+                      {createLogos(platform.platform.slug)}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -18,7 +18,6 @@ const PublisherId = observer(() => {
     if (typeof id === "string") {
       await queryStore.getDeveloperById(id);
       await queryStore.getGamesByDeveloper(id);
-      console.log(queryStore.developer);
     }
   };
   const expandGames = async () => {

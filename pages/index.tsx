@@ -63,7 +63,6 @@ const Home: NextPage = observer(() => {
             <main className="flex flex-col gap-3">
               {games &&
                 games.map((game, index) => {
-                  console.log(index);
                   return (
                     <MListItem
                       key={game.id}

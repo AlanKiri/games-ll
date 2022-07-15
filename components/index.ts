@@ -6,3 +6,4 @@ export { default as Rating } from "./rating/Rating";
 export { default as PlatformCard } from "./platformcard/PlatformCard";
 export { default as DisplayTile } from "./displayTile/displayTile";
 export { MDisplayTile as MDisplayTile } from "./displayTile/displayTile";
+export { default as ImageModal } from "./imageModal/imageModal";
