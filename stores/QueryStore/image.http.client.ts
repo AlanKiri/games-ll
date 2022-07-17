@@ -32,9 +32,12 @@ export default class HttpImageClient {
   }
 
   async getGamesSameSeries(id: string) {
-    const data = await $api.get<IGameRequest>(
-      `https://api.rawg.io/api/games/${id}/game-series`
-    );
+    const data = await $api.get<IGameRequest>(`/games/${id}/game-series`);
+    return data;
+  }
+
+  async getGameDlcs(id: string) {
+    const data = await $api.get<IGameRequest>(`/games/${id}/additions`);
     return data;
   }
 

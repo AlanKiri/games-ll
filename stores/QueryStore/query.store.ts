@@ -17,6 +17,7 @@ import { addDays, subDays } from "date-fns";
 export default class QueryStore {
   games?: IGame[] = undefined;
   game?: IGameById = undefined;
+  dlcs?: IGame[] = undefined;
   images?: IGameScreenshots = undefined;
   isLoading: boolean = false;
   genres?: IGenre[] = undefined;
@@ -83,6 +84,19 @@ export default class QueryStore {
       action("fetchSuccess", (games) => {
         if (games.data.count > 0) {
           this.games = games.data.results;
+        } else {
+          this.isLoading = false;
+        }
+      })
+    );
+  }
+  async getGameDlcs(id: string) {
+    this.isLoading = true;
+    this.dlcs = undefined;
+    await this.ImageService.getGameDlcs(id).then(
+      action("fetchSuccess", (dlcs) => {
+        if (dlcs.data.count > 0) {
+          this.dlcs = dlcs.data.results;
         }
         this.isLoading = false;
       })

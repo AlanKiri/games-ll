@@ -33,13 +33,16 @@ const GameId = observer(() => {
 
   const getGame = async () => {
     if (typeof id === "string") {
+      console.log(id);
       await queryStore.getGameById(id);
       await queryStore.getGameScreenshotsByiD(id);
       await queryStore.getGamesSameSeries(id);
       await queryStore.getGameStore(id);
+      await queryStore.getGameDlcs(id);
     }
   };
-  const { game, games, images, stores } = queryStore;
+  const { game, games, images, stores, dlcs } = queryStore;
+  useEffect(() => {}, [queryStore.isLoading]);
 
   const useLogo = (slug: string) => {
     switch (slug) {
@@ -167,6 +170,7 @@ const GameId = observer(() => {
                 </div>
               </div>
               {/* Carousel */}
+
               <div
                 className="my-3 flex w-full overflow-x-scroll scrollbar-hide "
                 {...events}
@@ -195,6 +199,7 @@ const GameId = observer(() => {
                   );
                 })}
               </div>
+
               {/* Rating */}
               <div className="mb-3">
                 {/* <h2 className="my-3 font-medium text-4xl">Ratings</h2> */}
@@ -334,6 +339,31 @@ const GameId = observer(() => {
                             release_date={game.released}
                             stars={game.rating}
                             title={game.name}
+                            variants={appearAnimation}
+                            initial="hidden"
+                            whileInView="visible"
+                          />
+                        );
+                      })}
+                  </div>
+                </>
+              )}
+              {/* Game dlcs */}
+              {dlcs && (
+                <>
+                  <h3 className="text-xl font-bold my-3">Game dlcs</h3>
+                  <div className="flex flex-col gap-3">
+                    {dlcs &&
+                      dlcs.map((dlc) => {
+                        return (
+                          <MListItem
+                            key={dlc.id}
+                            background_image={dlc.background_image}
+                            gameid={dlc.id}
+                            parent_platforms={dlc.parent_platforms}
+                            release_date={dlc.released}
+                            stars={dlc.rating}
+                            title={dlc.name}
                             variants={appearAnimation}
                             initial="hidden"
                             whileInView="visible"
